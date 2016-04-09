@@ -1,6 +1,8 @@
 # coding=utf-8
 """ CS:GO Icon Extractor """
 
+import re
+
 
 def parse_ids(ids_string):
     """
@@ -18,3 +20,19 @@ def parse_ids(ids_string):
         else:
             ids.append(int(id_string))
     return ids
+
+
+class ObjectSetDetails(object):
+    pass
+
+
+def parse_output_line(output_line):
+    (info, ids_string) = output_line.split(': ID(s) ')
+    info_re = re.compile(r'^ \[(?P<flag>-\w+)\] (?P<count>\d+) (?P<object_type>\w+?)s?$')
+    info_match = info_re.match(info)
+    result = ObjectSetDetails()
+    result.flag = info_match.group('flag')
+    result.object_type = info_match.group('object_type')
+    result.count = int(info_match.group('count'))
+    result.ids = parse_ids(ids_string)
+    return result
