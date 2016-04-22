@@ -24,7 +24,11 @@ def parse_ids(ids_string):
 
 
 class ObjectSetDetails(object):
-    pass
+    def __init__(self, flag=None, object_type=None, count=None, ids=None):
+        self.flag = flag
+        self.object_type = object_type
+        self.count = count
+        self.ids = ids
 
 
 def parse_output_line(output_line):
@@ -33,12 +37,11 @@ def parse_output_line(output_line):
     (info, ids_string) = output_line.split(': ID(s) ')
     info_re = re.compile(r'^ \[(?P<flag>-\w+)\] (?P<count>\d+) (?P<object_type>\w+?)s?$')
     info_match = info_re.match(info)
-    result = ObjectSetDetails()
-    result.flag = info_match.group('flag')
-    result.object_type = info_match.group('object_type')
-    result.count = int(info_match.group('count'))
-    result.ids = parse_ids(ids_string)
-    return result
+    flag = info_match.group('flag')
+    object_type = info_match.group('object_type')
+    count = int(info_match.group('count'))
+    ids = parse_ids(ids_string)
+    return ObjectSetDetails(flag=flag, object_type=object_type, count=count, ids=ids)
 
 
 def parse_output(output):
