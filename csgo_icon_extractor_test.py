@@ -1,10 +1,10 @@
 # coding=utf-8
 """ CS:GO Icon Extractor Tests """
 
-from csgo_icon_extractor import parse_ids, parse_output_line, parse_output
-
 import os
 import unittest
+
+from csgo_icon_extractor import parse_ids, parse_output_line, parse_output
 
 
 class ParseIdsTests(unittest.TestCase):
@@ -71,13 +71,18 @@ class ParseOutputTests(unittest.TestCase):
     def test_complex_output(self):
         output = 'Objects in file iconlib.swf:{}'.format(os.linesep) +\
                  ' [-p] 10 PNGs: ID(s) 5, 18-20, 99, 100, 110-113{}'.format(os.linesep) +\
+                 ' [-j] 4 JPEGs: ID(s) 8, 21, 23, 98{}'.format(os.linesep) +\
                  '{}'.format(os.linesep)
         result = parse_output(output)
-        self.assertEqual(1, len(result))
+        self.assertEqual(2, len(result))
         self.assertEqual('-p', result[0].flag)
         self.assertEqual('PNG', result[0].object_type)
         self.assertEqual(10, result[0].count)
         self.assertEqual([5, 18, 19, 20, 99, 100, 110, 111, 112, 113], result[0].ids)
+        self.assertEqual('-j', result[1].flag)
+        self.assertEqual('JPEG', result[1].object_type)
+        self.assertEqual(4, result[1].count)
+        self.assertEqual([8, 21, 23, 98], result[1].ids)
 
     def test_real_output(self):
         output = 'Objects in file iconlib.swf:{}'.format(os.linesep) +\
