@@ -3,6 +3,11 @@
 
 import os
 import re
+import subprocess
+import sys
+
+
+EXTRACT_CMD = 'swfextract'
 
 
 def parse_ids(ids_string):
@@ -48,3 +53,20 @@ def parse_output(output):
     output_lines = output.split(os.linesep)
     parsed_lines = [parse_output_line(line) for line in output_lines]
     return [line_details for line_details in parsed_lines if line_details is not None]
+
+
+class ExtractorError(Exception):
+    def __init__(self, message):
+        super(ExtractorError, self).__init__()
+        self.message = message
+
+
+def run_extract_command(iconlib_file, *command_args):
+    command = [EXTRACT_CMD, iconlib_file]
+    if command_args:
+        command.extend(*command_args)
+    try:
+        command_output = subprocess.check_output(command)
+        return command_output
+    except subprocess.CalledProcessError as e:
+        raise ExtractorError(str(e)), None, sys.exc_info()[2]

@@ -1,10 +1,12 @@
 # coding=utf-8
 """ CS:GO Icon Extractor Tests """
-
 import os
+import subprocess
 import unittest
 
-from csgo_icon_extractor import parse_ids, parse_output_line, parse_output
+import mock
+
+from csgo_icon_extractor import parse_ids, parse_output_line, parse_output, run_extract_command, ExtractorError
 
 
 class ParseIdsTests(unittest.TestCase):
@@ -119,3 +121,36 @@ class ParseOutputTests(unittest.TestCase):
         self.assertEqual('Frame', result[4].object_type)
         self.assertEqual(1, result[4].count)
         self.assertEqual([0], result[4].ids)
+
+
+class RunExtractCommandTests(unittest.TestCase):
+    """ Tests for csgo_icon_extractor.run_extract_command() """
+
+    @mock.patch('subprocess.check_output')
+    def test_returns_command_output(self, mock_run_subprocess):
+        command_output = 'fake output'
+        mock_run_subprocess.return_value = command_output
+        iconlib_file = mock.Mock()
+        result = run_extract_command(iconlib_file)
+        self.assertEqual(command_output, result)
+
+    @mock.patch('subprocess.check_output')
+    def test_runs_extract_subprocess_on_iconlib_file(self, mock_run_subprocess):
+        iconlib_file = mock.Mock()
+        run_extract_command(iconlib_file)
+        mock_run_subprocess.assert_called_once_with(['swfextract', iconlib_file])
+
+    @mock.patch('subprocess.check_output')
+    def test_passes_along_command_args_to_extract_subprocess(self, mock_run_subprocess):
+        iconlib_file = mock.Mock()
+        command_args = '-a 1 -b 2'
+        run_extract_command(iconlib_file, command_args.split())
+        mock_run_subprocess.assert_called_once_with(['swfextract', iconlib_file, '-a', '1', '-b', '2'])
+
+    @mock.patch('subprocess.check_output')
+    def test_raises_extractor_error_when_running_extract_subprocess_fails(self, mock_run_subprocess):
+        mock_run_subprocess.side_effect = subprocess.CalledProcessError(123, 'extract')
+        iconlib_file = mock.Mock()
+        with self.assertRaises(ExtractorError) as e:
+            run_extract_command(iconlib_file)
+        self.assertEqual("Command 'extract' returned non-zero exit status 123", e.exception.message)
