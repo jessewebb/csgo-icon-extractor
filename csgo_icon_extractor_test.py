@@ -7,7 +7,7 @@ import unittest
 import mock
 
 from csgo_icon_extractor import parse_ids, parse_output_line, parse_output, run_extract_command, ExtractorError, \
-    extract_object_set_details_list, ObjectSetDetails
+    extract_object_set_details_list, ObjectSetDetails, get_object_set_details_for_object_type
 
 
 class ParseIdsTests(unittest.TestCase):
@@ -178,3 +178,38 @@ class ExtractObjectSetDetailsListTests(unittest.TestCase):
         iconlib_file = mock.Mock()
         result = extract_object_set_details_list(iconlib_file)
         self.assertEqual(parse_output_result, result)
+
+
+class GetObjectSetDetailsForObjectTypeTests(unittest.TestCase):
+    """ Tests for csgo_icon_extractor.get_object_set_details_for_object_type() """
+
+    def test_returns_the_object_set_details_matching_given_object_type_when_its_first_in_the_list(self):
+        object_set_details1 = ObjectSetDetails(object_type='Type1')
+        object_set_details2 = ObjectSetDetails(object_type='Type2')
+        object_set_details_list = [object_set_details1, object_set_details2]
+        result = get_object_set_details_for_object_type(object_set_details_list, 'Type1')
+        self.assertEqual(object_set_details1, result)
+
+    def test_returns_the_object_set_details_matching_given_object_type_when_its_in_the_middle_of_the_list(self):
+        object_set_details1 = ObjectSetDetails(object_type='type one')
+        object_set_details2 = ObjectSetDetails(object_type='type two')
+        object_set_details3 = ObjectSetDetails(object_type='type three')
+        object_set_details_list = [object_set_details1, object_set_details2, object_set_details3]
+        result = get_object_set_details_for_object_type(object_set_details_list, 'type two')
+        self.assertEqual(object_set_details2, result)
+
+    def test_returns_the_object_set_details_matching_given_object_type_when_its_last_in_the_list(self):
+        object_set_details1 = ObjectSetDetails(object_type='foo')
+        object_set_details2 = ObjectSetDetails(object_type='bar')
+        object_set_details3 = ObjectSetDetails(object_type='baz')
+        object_set_details4 = ObjectSetDetails(object_type='bing')
+        object_set_details_list = [object_set_details1, object_set_details2, object_set_details3, object_set_details4]
+        result = get_object_set_details_for_object_type(object_set_details_list, 'bing')
+        self.assertEqual(object_set_details4, result)
+
+    def test_returns_none_when_object_set_details_dont_exist_for_given_object_type(self):
+        object_set_details1 = ObjectSetDetails(object_type='PNG')
+        object_set_details2 = ObjectSetDetails(object_type='Shape')
+        object_set_details_list = [object_set_details1, object_set_details2]
+        result = get_object_set_details_for_object_type(object_set_details_list, 'JPEG')
+        self.assertIsNone(result)

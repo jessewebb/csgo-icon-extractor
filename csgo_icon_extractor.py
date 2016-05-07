@@ -89,3 +89,7 @@ def extract_object_set_details_list(iconlib_file):
     output = run_extract_command(iconlib_file)
     object_set_details_list = parse_output(output)
     return object_set_details_list
+
+
+def get_object_set_details_for_object_type(object_set_details_list, object_type):
+    return next((osd for osd in object_set_details_list if osd.object_type == object_type), None)
