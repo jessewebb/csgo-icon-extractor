@@ -6,7 +6,8 @@ import unittest
 
 import mock
 
-from csgo_icon_extractor import parse_ids, parse_output_line, parse_output, run_extract_command, ExtractorError
+from csgo_icon_extractor import parse_ids, parse_output_line, parse_output, run_extract_command, ExtractorError, \
+    extract_object_set_details, ObjectSetDetails
 
 
 class ParseIdsTests(unittest.TestCase):
@@ -154,3 +155,26 @@ class RunExtractCommandTests(unittest.TestCase):
         with self.assertRaises(ExtractorError) as e:
             run_extract_command(iconlib_file)
         self.assertEqual("Command 'extract' returned non-zero exit status 123", e.exception.message)
+
+
+class ExtractObjectSetDetailsTests(unittest.TestCase):
+    """ Tests for csgo_icon_extractor.extract_object_set_details() """
+
+    @mock.patch('csgo_icon_extractor.parse_output', return_value=[ObjectSetDetails()])
+    @mock.patch('csgo_icon_extractor.run_extract_command')
+    def test_runs_extract_command_and_parses_command_output(self, mock_run_extract_cmd, mock_parse_output):
+        command_output = 'fake extract command output'
+        mock_run_extract_cmd.return_value = command_output
+        iconlib_file = mock.Mock()
+        extract_object_set_details(iconlib_file)
+        mock_parse_output.assert_called_once_with(command_output)
+
+    @mock.patch('csgo_icon_extractor.parse_output')
+    @mock.patch('csgo_icon_extractor.run_extract_command', mock.Mock(return_value='output'))
+    def test_returns_details_from_the_parsed_output(self, mock_parse_output):
+        parse_output_result = [ObjectSetDetails(flag='-a', object_type='Foo', count=3, ids=[1, 2, 3]),
+                               ObjectSetDetails(flag='-b', object_type='Bar', count=1, ids=[4])]
+        mock_parse_output.return_value = parse_output_result
+        iconlib_file = mock.Mock()
+        result = extract_object_set_details(iconlib_file)
+        self.assertEqual(parse_output_result, result)

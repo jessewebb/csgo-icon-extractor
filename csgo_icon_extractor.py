@@ -83,3 +83,9 @@ def run_extract_command(iconlib_file, *command_args):
         return command_output
     except subprocess.CalledProcessError as e:
         raise ExtractorError(str(e)), None, sys.exc_info()[2]
+
+
+def extract_object_set_details(iconlib_file):
+    output = run_extract_command(iconlib_file)
+    object_set_details = parse_output(output)
+    return object_set_details
