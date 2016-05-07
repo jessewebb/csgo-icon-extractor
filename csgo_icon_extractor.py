@@ -12,9 +12,9 @@ EXTRACT_CMD = 'swfextract'
 
 def parse_ids(ids_string):
     """
-    Parse a list of icon IDs.
-    :param ids_string: `swfextract` output string list of icon IDs (e.g. "1-3, 23, 99-123")
-    :return: list of icon IDs as ints (e.g. [1, 2, 3, 23, 99, 100, ...])
+    Parse a list of icon object IDs.
+    :param ids_string: extract command output string list of icon object IDs (e.g. `"1-3, 23, 99-123"`)
+    :return: list of icon object IDs as ints (e.g. `[1, 2, 3, 23, 99, 100, ...]`)
     """
     ids = []
     for id_string in ids_string.split(', '):
@@ -29,6 +29,9 @@ def parse_ids(ids_string):
 
 
 class ObjectSetDetails(object):
+    """
+    The metadata about a set of Icon objects of the same type available for extraction.
+    """
     def __init__(self, flag=None, object_type=None, count=None, ids=None):
         self.flag = flag
         self.object_type = object_type
@@ -37,6 +40,11 @@ class ObjectSetDetails(object):
 
 
 def parse_output_line(output_line):
+    """
+    Parse a line of output from the extract command.
+    :param output_line: single line of extract command output (without any new-line characters)
+    :return: an instance of `ObjectSetDetails` if metadata could be parsed, `None` otherwise
+    """
     if 'ID(s)' not in output_line:
         return None
     (info, ids_string) = output_line.split(': ID(s) ')
@@ -50,6 +58,11 @@ def parse_output_line(output_line):
 
 
 def parse_output(output):
+    """
+    Parse the output from running the extract command.
+    :param output: multi-line extract command output
+    :return: list of `ObjectSetDetails`, one for each icon object type
+    """
     output_lines = output.split(os.linesep)
     parsed_lines = [parse_output_line(line) for line in output_lines]
     return [line_details for line_details in parsed_lines if line_details is not None]

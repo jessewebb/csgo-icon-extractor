@@ -58,7 +58,7 @@ class ParseOutputLineTests(unittest.TestCase):
 
 
 class ParseOutputTests(unittest.TestCase):
-    """ Tests for csgo_icon_extractor.parse_output_line() """
+    """ Tests for csgo_icon_extractor.parse_output() """
 
     def test_simple_output(self):
         output = 'Objects in file iconlib.swf:{}'.format(os.linesep) +\
