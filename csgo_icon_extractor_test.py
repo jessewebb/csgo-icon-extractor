@@ -7,7 +7,7 @@ import unittest
 import mock
 
 from csgo_icon_extractor import parse_ids, parse_output_line, parse_output, run_extract_command, ExtractorError, \
-    extract_object_set_details, ObjectSetDetails
+    extract_object_set_details_list, ObjectSetDetails
 
 
 class ParseIdsTests(unittest.TestCase):
@@ -157,8 +157,8 @@ class RunExtractCommandTests(unittest.TestCase):
         self.assertEqual("Command 'extract' returned non-zero exit status 123", e.exception.message)
 
 
-class ExtractObjectSetDetailsTests(unittest.TestCase):
-    """ Tests for csgo_icon_extractor.extract_object_set_details() """
+class ExtractObjectSetDetailsListTests(unittest.TestCase):
+    """ Tests for csgo_icon_extractor.extract_object_set_details_list() """
 
     @mock.patch('csgo_icon_extractor.parse_output', return_value=[ObjectSetDetails()])
     @mock.patch('csgo_icon_extractor.run_extract_command')
@@ -166,15 +166,15 @@ class ExtractObjectSetDetailsTests(unittest.TestCase):
         command_output = 'fake extract command output'
         mock_run_extract_cmd.return_value = command_output
         iconlib_file = mock.Mock()
-        extract_object_set_details(iconlib_file)
+        extract_object_set_details_list(iconlib_file)
         mock_parse_output.assert_called_once_with(command_output)
 
     @mock.patch('csgo_icon_extractor.parse_output')
     @mock.patch('csgo_icon_extractor.run_extract_command', mock.Mock(return_value='output'))
-    def test_returns_details_from_the_parsed_output(self, mock_parse_output):
+    def test_returns_list_of_object_set_details_from_the_parsed_output(self, mock_parse_output):
         parse_output_result = [ObjectSetDetails(flag='-a', object_type='Foo', count=3, ids=[1, 2, 3]),
                                ObjectSetDetails(flag='-b', object_type='Bar', count=1, ids=[4])]
         mock_parse_output.return_value = parse_output_result
         iconlib_file = mock.Mock()
-        result = extract_object_set_details(iconlib_file)
+        result = extract_object_set_details_list(iconlib_file)
         self.assertEqual(parse_output_result, result)

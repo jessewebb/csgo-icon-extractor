@@ -85,7 +85,7 @@ def run_extract_command(iconlib_file, *command_args):
         raise ExtractorError(str(e)), None, sys.exc_info()[2]
 
 
-def extract_object_set_details(iconlib_file):
+def extract_object_set_details_list(iconlib_file):
     output = run_extract_command(iconlib_file)
-    object_set_details = parse_output(output)
-    return object_set_details
+    object_set_details_list = parse_output(output)
+    return object_set_details_list
