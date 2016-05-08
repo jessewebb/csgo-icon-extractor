@@ -7,7 +7,8 @@ import unittest
 import mock
 
 from csgo_icon_extractor import parse_ids, parse_output_line, parse_output, run_extract_command, ExtractorError, \
-    extract_object_set_details_list, ObjectSetDetails, get_object_set_details_for_object_type, extract_icon_set
+    extract_object_set_details_list, ObjectSetDetails, get_object_set_details_for_object_type, extract_icon_set, \
+    create_output_directory
 
 
 class ParseIdsTests(unittest.TestCase):
@@ -233,3 +234,34 @@ class ExtractIconSetTests(unittest.TestCase):
         ids = [1, 2, 3, 4]
         extract_icon_set(mock.Mock(), ObjectSetDetails(ids=ids), 'ext', 'out')
         self.assertEqual(len(ids), mock_run_extract_cmd.call_count)
+
+
+class CreateOutputDirectoryTests(unittest.TestCase):
+    """ Tests for csgo_icon_extractor.create_output_directory() """
+
+    @mock.patch('os.makedirs')
+    @mock.patch('os.path.exists')
+    def test_makes_the_output_dir_when_it_doesnt_exist(self, mock_path_exists, mock_make_dirs):
+        mock_path_exists.return_value = False
+        output_dir = 'output_dir'
+        create_output_directory(output_dir)
+        mock_make_dirs.assert_called_once_with(output_dir)
+
+    @mock.patch('os.makedirs')
+    @mock.patch('os.path.isdir')
+    @mock.patch('os.path.exists')
+    def test_does_nothing_when_the_output_dir_already_exists(self, mock_path_exists, mock_path_is_dir, mock_make_dirs):
+        mock_path_exists.return_value = True
+        mock_path_is_dir.return_value = True
+        create_output_directory('output_dir')
+        mock_make_dirs.assert_not_called()
+
+    @mock.patch('os.makedirs')
+    @mock.patch('os.path.isdir')
+    @mock.patch('os.path.exists')
+    def test_raises_extractor_error_when_the_output_dir_already_exists_but_it_is_not_a_directory(self, mock_path_exists, mock_path_is_dir, mock_make_dirs):
+        mock_path_exists.return_value = True
+        mock_path_is_dir.return_value = False
+        with self.assertRaises(ExtractorError) as e:
+            create_output_directory('not-a-dir')
+        self.assertEqual("output_dir 'not-a-dir' already exists but is not a directory!", e.exception.message)

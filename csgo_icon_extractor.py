@@ -100,3 +100,11 @@ def extract_icon_set(iconlib_file, object_set_details, icon_file_ext, output_dir
         output_file = '{}{}{}.{}'.format(output_dir, os.path.sep, icon_id, icon_file_ext)
         command_args = '{} {} -o {}'.format(object_set_details.flag, icon_id, output_file)
         run_extract_command(iconlib_file, command_args.split())
+
+
+def create_output_directory(output_dir):
+    if os.path.exists(output_dir):
+        if not os.path.isdir(output_dir):
+            raise ExtractorError("output_dir '{}' already exists but is not a directory!".format(output_dir))
+    else:
+        os.makedirs(output_dir)
