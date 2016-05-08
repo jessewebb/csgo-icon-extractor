@@ -7,7 +7,7 @@ import unittest
 import mock
 
 from csgo_icon_extractor import parse_ids, parse_output_line, parse_output, run_extract_command, ExtractorError, \
-    extract_object_set_details_list, ObjectSetDetails, get_object_set_details_for_object_type
+    extract_object_set_details_list, ObjectSetDetails, get_object_set_details_for_object_type, extract_icon_set
 
 
 class ParseIdsTests(unittest.TestCase):
@@ -213,3 +213,23 @@ class GetObjectSetDetailsForObjectTypeTests(unittest.TestCase):
         object_set_details_list = [object_set_details1, object_set_details2]
         result = get_object_set_details_for_object_type(object_set_details_list, 'JPEG')
         self.assertIsNone(result)
+
+
+class ExtractIconSetTests(unittest.TestCase):
+    """ Tests for csgo_icon_extractor.extract_icon_set() """
+
+    @mock.patch('csgo_icon_extractor.run_extract_command')
+    def test_runs_extract_command_with_expected_arguments(self, mock_run_extract_cmd):
+        iconlib_file = mock.Mock()
+        object_set_details = ObjectSetDetails(flag='-t', ids=[123])
+        icon_file_ext = 'ext'
+        output_dir = 'icons_output'
+        expected_extract_cmd_args = '-t 123 -o icons_output{}123.ext'.format(os.path.sep)
+        extract_icon_set(iconlib_file, object_set_details, icon_file_ext, output_dir)
+        mock_run_extract_cmd.assert_called_once_with(iconlib_file, expected_extract_cmd_args.split())
+
+    @mock.patch('csgo_icon_extractor.run_extract_command')
+    def test_runs_extract_command_for_each_icon_id_in_set_details(self, mock_run_extract_cmd):
+        ids = [1, 2, 3, 4]
+        extract_icon_set(mock.Mock(), ObjectSetDetails(ids=ids), 'ext', 'out')
+        self.assertEqual(len(ids), mock_run_extract_cmd.call_count)

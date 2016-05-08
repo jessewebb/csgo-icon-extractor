@@ -93,3 +93,10 @@ def extract_object_set_details_list(iconlib_file):
 
 def get_object_set_details_for_object_type(object_set_details_list, object_type):
     return next((osd for osd in object_set_details_list if osd.object_type == object_type), None)
+
+
+def extract_icon_set(iconlib_file, object_set_details, icon_file_ext, output_dir):
+    for icon_id in object_set_details.ids:
+        output_file = '{}{}{}.{}'.format(output_dir, os.path.sep, icon_id, icon_file_ext)
+        command_args = '{} {} -o {}'.format(object_set_details.flag, icon_id, output_file)
+        run_extract_command(iconlib_file, command_args.split())
