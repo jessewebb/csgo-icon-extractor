@@ -2,3 +2,4 @@
 csgo-icons/
 venv/
 iconlib.swf
+*.py[co]
