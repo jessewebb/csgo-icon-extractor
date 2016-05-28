@@ -63,7 +63,7 @@ def parse_output(output):
     :param output: multi-line extract command output
     :return: list of `ObjectSetDetails`, one for each icon object type
     """
-    output_lines = output.split(os.linesep)
+    output_lines = output.splitlines()
     parsed_lines = [parse_output_line(line) for line in output_lines]
     return [line_details for line_details in parsed_lines if line_details is not None]
 
