@@ -10,6 +10,12 @@ import sys
 EXTRACT_CMD = 'swfextract'
 
 
+SUPPORTED_ICON_TYPE_MAP = {
+    'JPEG': 'jpg',
+    'PNG': 'png'
+}
+
+
 def parse_ids(ids_string):
     """
     Parse a list of icon object IDs.
