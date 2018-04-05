@@ -33,4 +33,4 @@ TODO
 
 This software is free under [the MIT License](https://github.com/jessewebb/csgo-icon-extractor/blob/master/LICENSE).
 
-Copyright © 2016 Jesse Webb
+Copyright © 2016-2018 Jesse Webb
