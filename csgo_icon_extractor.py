@@ -4,7 +4,6 @@
 import os
 import re
 import subprocess
-import sys
 
 
 EXTRACT_CMD = 'swfextract'
@@ -85,10 +84,10 @@ def run_extract_command(iconlib_file, *command_args):
     if command_args:
         command.extend(*command_args)
     try:
-        command_output = subprocess.check_output(command)
+        command_output = subprocess.check_output(command, universal_newlines=True)
         return command_output
     except subprocess.CalledProcessError as e:
-        raise ExtractorError(str(e)), None, sys.exc_info()[2]
+        raise ExtractorError("command '{}' returned non-zero exit code {}".format(e.cmd, e.returncode)) from e
 
 
 def extract_object_set_details_list(iconlib_file):
@@ -111,6 +110,6 @@ def extract_icon_set(iconlib_file, object_set_details, icon_file_ext, output_dir
 def create_output_directory(output_dir):
     if os.path.exists(output_dir):
         if not os.path.isdir(output_dir):
-            raise ExtractorError("output_dir '{}' already exists but is not a directory!".format(output_dir))
+            raise ExtractorError("output_dir '{}' already exists but is not a directory".format(output_dir))
     else:
         os.makedirs(output_dir)

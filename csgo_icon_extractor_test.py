@@ -136,14 +136,15 @@ class RunExtractCommandTests(unittest.TestCase):
     def test_runs_extract_subprocess_on_iconlib_file(self, mock_run_subprocess):
         iconlib_file = mock.Mock()
         run_extract_command(iconlib_file)
-        mock_run_subprocess.assert_called_once_with(['swfextract', iconlib_file])
+        mock_run_subprocess.assert_called_once_with(['swfextract', iconlib_file], universal_newlines=True)
 
     @mock.patch('subprocess.check_output')
     def test_passes_along_command_args_to_extract_subprocess(self, mock_run_subprocess):
         iconlib_file = mock.Mock()
         command_args = '-a 1 -b 2'
         run_extract_command(iconlib_file, command_args.split())
-        mock_run_subprocess.assert_called_once_with(['swfextract', iconlib_file, '-a', '1', '-b', '2'])
+        mock_run_subprocess.assert_called_once_with(['swfextract', iconlib_file, '-a', '1', '-b', '2'],
+                                                    universal_newlines=True)
 
     @mock.patch('subprocess.check_output')
     def test_raises_extractor_error_when_running_extract_subprocess_fails(self, mock_run_subprocess):
@@ -151,7 +152,7 @@ class RunExtractCommandTests(unittest.TestCase):
         iconlib_file = mock.Mock()
         with self.assertRaises(ExtractorError) as e:
             run_extract_command(iconlib_file)
-        self.assertEqual("Command 'extract' returned non-zero exit status 123", e.exception.message)
+        self.assertEqual("command 'extract' returned non-zero exit code 123", e.exception.message)
 
 
 class ExtractObjectSetDetailsListTests(unittest.TestCase):
@@ -261,5 +262,5 @@ class CreateOutputDirectoryTests(unittest.TestCase):
         mock_path_is_dir.return_value = False
         with self.assertRaises(ExtractorError) as e:
             create_output_directory('not-a-dir')
-        self.assertEqual("output_dir 'not-a-dir' already exists but is not a directory!", e.exception.message)
+        self.assertEqual("output_dir 'not-a-dir' already exists but is not a directory", e.exception.message)
         mock_make_dirs.assert_not_called()
