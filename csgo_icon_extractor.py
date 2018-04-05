@@ -3,6 +3,7 @@
 
 import os
 import re
+import shutil
 import subprocess
 
 
@@ -13,6 +14,14 @@ SUPPORTED_ICON_TYPE_MAP = {
     'JPEG': 'jpg',
     'PNG': 'png'
 }
+
+
+def verfiy_swt_tools_is_in_path():
+    """
+    Check to see if SWFTools is installed and in the PATH
+    """
+    if not shutil.which(EXTRACT_CMD):
+        raise ExtractorError("swfextract was not found in PATH")
 
 
 def parse_ids(ids_string):

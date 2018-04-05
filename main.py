@@ -24,6 +24,7 @@ def main():
     iconlib_file = args.iconlib
     output_dir = args.outdir
     print('Using configuration: iconlib={}, outdir={}'.format(iconlib_file, output_dir))
+    csgo_icon_extractor.verfiy_swt_tools_is_in_path()
     csgo_icon_extractor.create_output_directory(output_dir)
     object_set_details_list = csgo_icon_extractor.extract_object_set_details_list(iconlib_file)
     for object_set_details in object_set_details_list:
