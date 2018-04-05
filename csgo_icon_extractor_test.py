@@ -4,7 +4,7 @@ import os
 import subprocess
 import unittest
 
-import mock
+from unittest import mock
 
 from csgo_icon_extractor import parse_ids, parse_output_line, parse_output, run_extract_command, ExtractorError, \
     extract_object_set_details_list, ObjectSetDetails, get_object_set_details_for_object_type, extract_icon_set, \
