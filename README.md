@@ -20,10 +20,6 @@ Python command-line utility for extracting the icon set used in the _Counter-Str
 
 You will then have a `csgo-icons/` directory with all of the icons from the game within it!
 
-### Advanced Usage
-
-TODO
-
 ## References
 
 - ["CS:GO Weapon Icons" thread in reddit's /r/GlobalOffensive/](https://www.reddit.com/r/GlobalOffensive/comments/2g7fjf/csgo_weapon_icons/)
