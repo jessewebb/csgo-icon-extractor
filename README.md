@@ -5,7 +5,7 @@ Python command-line utility for extracting the icon set used in the _Counter-Str
 
 ## How to Use
 
-**Pre-requisites:** You must have [Python](https://www.python.org/) and [SWFTools](http://www.swftools.org/) installed.
+**Pre-requisites:** You must have [Python](https://www.python.org/) (v3.3+) and [SWFTools](http://www.swftools.org/) (v0.9+) installed.
 
 ### Getting Started
 
@@ -16,7 +16,7 @@ Python command-line utility for extracting the icon set used in the _Counter-Str
 - Make a copy of CS:GO's icon library file (`iconlib.swf`):  
 `copy "C:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\csgo\resource\flash\iconlib.swf" iconlib.swf`
 - Run the csgo-icon-extractor command-line script (`main.py`):  
-`python main.py`
+`py -3 main.py`
 
 You will then have a `csgo-icons/` directory with all of the icons from the game within it!
 
